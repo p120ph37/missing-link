@@ -202,7 +202,7 @@
  *   limitations under the License.
  */
 
-package org.missinglink.ant.task.http.client;
+package org.missinglink.http.client;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -202,126 +202,122 @@
  *   limitations under the License.
  */
 
-package org.missinglink.ant.task.http.client;
+package org.missinglink.http.client;
 
-import java.io.IOException;
-
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.missinglink.ant.task.http.server.AbstractHttpServerTest;
 import org.missinglink.http.client.HttpClient;
-import org.missinglink.http.client.HttpResponse;
-import org.missinglink.http.exception.HttpClientException;
+import org.missinglink.http.exception.InvalidUriException;
 
 /**
- * @author alex.sherwin
+ * @author alex
  * 
  */
-public class HttpClientTest extends AbstractHttpServerTest {
+public class HttpClientQueryTest {
 
-  public HttpClientTest() {
+  public HttpClientQueryTest() {
     super();
   }
 
-  @Before
-  public void before() throws IOException {
-    startHttpServer();
-  }
-
-  @After
-  public void after() throws IOException {
-    stopHttpServer();
+  @Test
+  public void testNoQuery() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().size() == 0);
+    Assert.assertTrue(httpClient.getQueryUnencoded().size() == 0);
   }
 
   @Test
-  public void testGetWithEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + PING_CONTEXT).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(PING_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(PING_RESPONSE, response.getEntityAsString());
-    Assert.assertEquals(200, response.getStatus());
+  public void testNoQueryInUriNullParam() throws InvalidUriException {
+    HttpClient httpClient = HttpClient.uri("http://host/context").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().size() == 0);
+    Assert.assertTrue(httpClient.getQueryUnencoded().size() == 0);
+    httpClient = httpClient.build().query(null, null).toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().size() == 0);
+    Assert.assertTrue(httpClient.getQueryUnencoded().size() == 0);
   }
 
   @Test
-  public void testGetSecureWithEntityAuthFailure() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + SECURE_CONTEXT + PING_CONTEXT).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertEquals(401, response.getStatus());
+  public void testNoQueryInUriNullValue() throws InvalidUriException {
+    HttpClient httpClient = HttpClient.uri("http://host/context").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().size() == 0);
+    Assert.assertTrue(httpClient.getQueryUnencoded().size() == 0);
+    httpClient = httpClient.build().query("qp", null).toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertNull(httpClient.getQueryEncoded().get("qp"));
+    Assert.assertNull(httpClient.getQueryUnencoded().get("qp"));
   }
 
   @Test
-  public void testGetSecureWithEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + SECURE_CONTEXT + PING_CONTEXT).credentials(USERNAME, PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(PING_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(PING_RESPONSE, response.getEntityAsString());
-    Assert.assertEquals(200, response.getStatus());
+  public void testQueryNoValue() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context?qp").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertNull(httpClient.getQueryUnencoded().get("qp"));
+    Assert.assertNull(httpClient.getQueryEncoded().get("qp"));
   }
 
   @Test
-  public void test404() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + "/doesnt/exist").toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertEquals(404, response.getStatus());
+  public void testQueryValue() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context?qp=value").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertEquals("value", httpClient.getQueryUnencoded().get("qp"));
+    Assert.assertEquals("value", httpClient.getQueryEncoded().get("qp"));
   }
 
   @Test
-  public void test500() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + INTERNAL_SERER_ERROR_CONTEXT).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(INTERNAL_SERER_ERROR_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(500, response.getStatus());
+  public void testQueryAndBuilderValue() throws InvalidUriException {
+    HttpClient httpClient = HttpClient.uri("http://host/context?qp=value").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertEquals("value", httpClient.getQueryUnencoded().get("qp"));
+    Assert.assertEquals("value", httpClient.getQueryEncoded().get("qp"));
+    httpClient = httpClient.build().query("qp2", "value").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp2"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp2"));
+    Assert.assertEquals("value", httpClient.getQueryUnencoded().get("qp2"));
+    Assert.assertEquals("value", httpClient.getQueryEncoded().get("qp2"));
   }
 
   @Test
-  public void test500Secured() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + SECURE_CONTEXT + INTERNAL_SERER_ERROR_CONTEXT).credentials(USERNAME, PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(INTERNAL_SERER_ERROR_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(500, response.getStatus());
+  public void testQueryValueAndBuilderEncoded() throws InvalidUriException {
+    HttpClient httpClient = HttpClient.uri("http://host/context?qp=value space").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertEquals("value space", httpClient.getQueryUnencoded().get("qp"));
+    Assert.assertEquals("value+space", httpClient.getQueryEncoded().get("qp"));
+    httpClient = httpClient.build().query("qp2", "qp2 space").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp2"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp2"));
+    Assert.assertEquals("qp2 space", httpClient.getQueryUnencoded().get("qp2"));
+    Assert.assertEquals("qp2+space", httpClient.getQueryEncoded().get("qp2"));
   }
 
   @Test
-  public void testPostWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + ECHO_CONTEXT).post().entity("Hello World").toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
+  public void testQueryMultipleValues() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context?qp=value&qp2=value2").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp2"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp2"));
+    Assert.assertEquals("value", httpClient.getQueryUnencoded().get("qp"));
+    Assert.assertEquals("value", httpClient.getQueryEncoded().get("qp"));
+    Assert.assertEquals("value2", httpClient.getQueryUnencoded().get("qp2"));
+    Assert.assertEquals("value2", httpClient.getQueryEncoded().get("qp2"));
   }
 
   @Test
-  public void testPostSecuredWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + SECURE_CONTEXT + ECHO_CONTEXT).post().entity("Hello World").credentials(USERNAME, PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
+  public void testQueryMultipleValuesEncoded() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context?qp=value space&qp2=value2 space").toHttpClient();
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp"));
+    Assert.assertTrue(httpClient.getQueryEncoded().containsKey("qp2"));
+    Assert.assertTrue(httpClient.getQueryUnencoded().containsKey("qp2"));
+    Assert.assertEquals("value space", httpClient.getQueryUnencoded().get("qp"));
+    Assert.assertEquals("value+space", httpClient.getQueryEncoded().get("qp"));
+    Assert.assertEquals("value2 space", httpClient.getQueryUnencoded().get("qp2"));
+    Assert.assertEquals("value2+space", httpClient.getQueryEncoded().get("qp2"));
   }
 
-  @Test
-  public void testPutWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + ECHO_CONTEXT).put().entity("Hello World").toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
-  }
-
-  @Test
-  public void testPutSecuredWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + SECURE_CONTEXT + ECHO_CONTEXT).put().entity("Hello World").credentials(USERNAME, PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
-  }
 }
