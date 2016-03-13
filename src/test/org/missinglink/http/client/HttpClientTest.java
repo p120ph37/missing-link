@@ -210,14 +210,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.missinglink.http.client.HttpClient;
-import org.missinglink.http.client.HttpResponse;
 import org.missinglink.http.exception.HttpClientException;
 import org.missinglink.http.server.AbstractHttpServerTest;
 
 /**
  * @author alex.sherwin
- * 
+ *
  */
 public class HttpClientTest extends AbstractHttpServerTest {
 
@@ -322,6 +320,15 @@ public class HttpClientTest extends AbstractHttpServerTest {
     final HttpResponse response = httpClient.invoke();
     Assert.assertNotNull(response);
     Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
+    Assert.assertEquals(200, response.getStatus());
+  }
+
+  @Test
+  public void testHttpHeaders() throws HttpClientException, IOException {
+    final HttpClient httpClient = HttpClient.uri(getHttpServerUri() + ECHO_HEADERS_CONTEXT).get().header("Hello", "World").toHttpClient();
+    final HttpResponse response = httpClient.invoke();
+    Assert.assertNotNull(response);
+    Assert.assertEquals("World", response.getHeader(ECHO_HEADERS_PREFIX + "Hello").get(0));
     Assert.assertEquals(200, response.getStatus());
   }
 }
