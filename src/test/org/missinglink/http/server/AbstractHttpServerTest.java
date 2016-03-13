@@ -202,7 +202,7 @@
  *   limitations under the License.
  */
 
-package org.missinglink.ant.task.http.server;
+package org.missinglink.http.server;
 
 import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpContext;
@@ -233,7 +233,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.missinglink.ant.task.http.AbstractTest;
+import org.missinglink.http.AbstractTest;
 import org.missinglink.http.encoding.Base64;
 import org.missinglink.tools.StreamUtils;
 

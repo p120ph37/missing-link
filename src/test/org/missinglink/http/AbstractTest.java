@@ -202,61 +202,17 @@
  *   limitations under the License.
  */
 
-package org.missinglink.ant.task.http.client;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.missinglink.http.client.HttpClient;
-import org.missinglink.http.exception.InvalidUriException;
+package org.missinglink.http;
 
 /**
+ * 
  * @author alex.sherwin
  * 
  */
-public class HttpClientAuthenticationDataTest {
+public abstract class AbstractTest {
 
-  public HttpClientAuthenticationDataTest() {
+  protected AbstractTest() {
     super();
   }
 
-  @Test
-  public void testSetNullUsername() throws InvalidUriException {
-    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials(null, null).toHttpClient();
-    Assert.assertNull(httpClient.getUsername());
-  }
-
-  @Test
-  public void testSetNullPassword() throws InvalidUriException {
-    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials(null, null).toHttpClient();
-    Assert.assertNull(httpClient.getPassword());
-  }
-
-  @Test
-  public void testSetUsername() throws InvalidUriException {
-    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials("user", null).toHttpClient();
-    Assert.assertEquals("user", httpClient.getUsername());
-  }
-
-  @Test
-  public void testSetPassword() throws InvalidUriException {
-    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials(null, "passwd").toHttpClient();
-    Assert.assertEquals("passwd", httpClient.getPassword());
-  }
-
-  @Test
-  public void testSetUserAndPassword() throws InvalidUriException {
-    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials("user", "passwd").toHttpClient();
-    Assert.assertEquals("user", httpClient.getUsername());
-    Assert.assertEquals("passwd", httpClient.getPassword());
-  }
-
-  @Test
-  public void testUnsetUserAndPassword() throws InvalidUriException {
-    HttpClient httpClient = HttpClient.uri("http://host/context").credentials("user", "passwd").toHttpClient();
-    Assert.assertEquals("user", httpClient.getUsername());
-    Assert.assertEquals("passwd", httpClient.getPassword());
-    httpClient = httpClient.build().credentials(null, null).toHttpClient();
-    Assert.assertNull(httpClient.getUsername());
-    Assert.assertNull(httpClient.getPassword());
-  }
 }

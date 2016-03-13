@@ -202,84 +202,61 @@
  *   limitations under the License.
  */
 
-package org.missinglink.ant.task.http.client;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+package org.missinglink.http.client;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.missinglink.http.client.HttpClient;
-import org.missinglink.http.exception.InvalidStreamException;
 import org.missinglink.http.exception.InvalidUriException;
 
 /**
  * @author alex.sherwin
  * 
  */
-public class HttpClientEntityTest {
+public class HttpClientAuthenticationDataTest {
 
-  public HttpClientEntityTest() {
+  public HttpClientAuthenticationDataTest() {
     super();
   }
 
   @Test
-  public void testNullInputStreamEntity() throws InvalidUriException, InvalidStreamException {
-    final InputStream is = null;
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(is).toHttpClient();
-    Assert.assertNull(httpClient.getEntity());
+  public void testSetNullUsername() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials(null, null).toHttpClient();
+    Assert.assertNull(httpClient.getUsername());
   }
 
   @Test
-  public void testNullStringEntity() throws InvalidUriException {
-    final String str = null;
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(str).toHttpClient();
-    Assert.assertNull(httpClient.getEntity());
+  public void testSetNullPassword() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials(null, null).toHttpClient();
+    Assert.assertNull(httpClient.getPassword());
   }
 
   @Test
-  public void testInputStreamEntity() throws InvalidUriException, IOException, InvalidStreamException {
-    final String str = "Hello World";
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(new ByteArrayInputStream(str.getBytes())).toHttpClient();
-    Assert.assertEquals(str.getBytes().length, httpClient.getEntity().available());
+  public void testSetUsername() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials("user", null).toHttpClient();
+    Assert.assertEquals("user", httpClient.getUsername());
   }
 
   @Test
-  public void testStringEntity() throws InvalidUriException, IOException {
-    final String str = "Hello World";
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(str).toHttpClient();
-    Assert.assertEquals(str.getBytes().length, httpClient.getEntity().available());
+  public void testSetPassword() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials(null, "passwd").toHttpClient();
+    Assert.assertEquals("passwd", httpClient.getPassword());
   }
 
   @Test
-  public void testInputStreamEntityToString() throws InvalidUriException, IOException, InvalidStreamException {
-    final String str = "Hello World";
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(new ByteArrayInputStream(str.getBytes())).toHttpClient();
-    Assert.assertEquals(str, httpClient.getEntityAsString());
+  public void testSetUserAndPassword() throws InvalidUriException {
+    final HttpClient httpClient = HttpClient.uri("http://host/context").credentials("user", "passwd").toHttpClient();
+    Assert.assertEquals("user", httpClient.getUsername());
+    Assert.assertEquals("passwd", httpClient.getPassword());
   }
 
   @Test
-  public void testStringEntityToString() throws InvalidUriException, IOException {
-    final String str = "Hello World";
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(str).toHttpClient();
-    Assert.assertEquals(str, httpClient.getEntityAsString());
+  public void testUnsetUserAndPassword() throws InvalidUriException {
+    HttpClient httpClient = HttpClient.uri("http://host/context").credentials("user", "passwd").toHttpClient();
+    Assert.assertEquals("user", httpClient.getUsername());
+    Assert.assertEquals("passwd", httpClient.getPassword());
+    httpClient = httpClient.build().credentials(null, null).toHttpClient();
+    Assert.assertNull(httpClient.getUsername());
+    Assert.assertNull(httpClient.getPassword());
   }
-
-  @Test
-  public void testInputStreamEntityToStringMultipleReads() throws InvalidUriException, IOException, InvalidStreamException {
-    final String str = "Hello World";
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(new ByteArrayInputStream(str.getBytes())).toHttpClient();
-    Assert.assertEquals(str, httpClient.getEntityAsString());
-    Assert.assertEquals(str, httpClient.getEntityAsString());
-  }
-
-  @Test
-  public void testStringEntityToStringMultipleReads() throws InvalidUriException, IOException {
-    final String str = "Hello World";
-    final HttpClient httpClient = HttpClient.uri("http://host/context").entity(str).toHttpClient();
-    Assert.assertEquals(str, httpClient.getEntityAsString());
-    Assert.assertEquals(str, httpClient.getEntityAsString());
-  }
-
 }
