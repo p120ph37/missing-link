@@ -204,36 +204,44 @@
 
 package org.missinglink.ant.task.http;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
-import org.junit.After;
+import org.apache.tools.ant.BuildFileRule;
+import org.apache.tools.ant.Project;
 import org.junit.Before;
+import org.junit.Rule;
+import org.missinglink.http.server.AbstractHttpServerTest;
 
-public class HttpsTaskTest extends AbstractHttpTaskTest {
+public abstract class AbstractAntTest extends AbstractHttpServerTest {
 
-  public HttpsTaskTest() throws IOException {
-    super("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n" +
-        "<project>\n" +
-        "  <taskdef name=\"http\" classname=\"org.missinglink.ant.task.http.HttpClientTask\" />\n" +
-        "  <target name=\"simple_get\">\n" +
-        "    <http url=\"${server_uri}${server_context}\">\n" +
-        "      <keystore file=\"${keystore_file}\" password=\"${keystore_password}\" />\n" +
-        "    </http>\n" +
-        "  </target>\n" +
-        "</project>");
+  @Rule
+  public BuildFileRule buildRule = new BuildFileRule();
+  protected Project project;
+  protected final String buildfile;
+
+  public AbstractAntTest(final String buildxml) throws IOException {
+
+    super();
+
+    final File temp = File.createTempFile("build", ".xml");
+    temp.deleteOnExit();
+    final BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
+    bw.write(buildxml);
+    bw.close();
+
+    this.buildfile = temp.getAbsolutePath();
+
   }
 
   @Before
-  public void beforeTask() throws Exception {
-    startHttpsServer();
-    project.setNewProperty("server_uri", getHttpsServerUri());
-    project.setNewProperty("keystore_file", getKeyStoreFile());
-    project.setNewProperty("keystore_password", KEYSTORE_PASSWORD);
-  }
+  public void beforeBuildfile() throws Exception {
 
-  @After
-  public void afterTask() throws IOException {
-    stopHttpsServer();
+    buildRule.configureProject(buildfile);
+    project = buildRule.getProject();
+
   }
 
 }

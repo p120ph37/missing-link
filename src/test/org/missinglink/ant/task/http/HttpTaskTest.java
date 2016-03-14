@@ -211,8 +211,14 @@ import org.junit.Before;
 
 public class HttpTaskTest extends AbstractHttpTaskTest {
 
-  public HttpTaskTest() {
-    super(HTTP_BUILDFILE);
+  public HttpTaskTest() throws IOException {
+    super("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n" +
+        "<project>\n" +
+        "  <taskdef name=\"http\" classname=\"org.missinglink.ant.task.http.HttpClientTask\" />\n" +
+        "  <target name=\"simple_get\">\n" +
+        "    <http url=\"${server_uri}${server_context}\" />\n" +
+        "  </target>\n" +
+        "</project>");
   }
 
   @Before

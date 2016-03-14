@@ -210,33 +210,15 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.BuildFileRule;
-import org.apache.tools.ant.Project;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.missinglink.http.server.AbstractHttpServerTest;
 
-public abstract class AbstractHttpTaskTest extends AbstractHttpServerTest {
+public abstract class AbstractHttpTaskTest extends AbstractAntTest {
 
-  protected static final String HTTP_BUILDFILE = "http-test.xml";
-  protected static final String HTTPS_BUILDFILE = "https-test.xml";
-
-  @Rule
-  public BuildFileRule buildRule = new BuildFileRule();
-  protected Project project;
-  protected final String buildfile;
-
-  public AbstractHttpTaskTest(final String buildfile) {
-    super();
-    this.buildfile = buildfile;
-  }
-
-  @Before
-  public void beforeBuildfile() throws Exception {
-    buildRule.configureProject(getClass().getResource(buildfile).getFile());
-    project = buildRule.getProject();
+  public AbstractHttpTaskTest(final String buildxml) throws IOException {
+    super(buildxml);
   }
 
   @Test
