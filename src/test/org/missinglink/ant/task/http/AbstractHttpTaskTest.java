@@ -217,8 +217,8 @@ import org.junit.Test;
 
 public abstract class AbstractHttpTaskTest extends AbstractAntTest {
 
-  public AbstractHttpTaskTest(final String buildxml) throws IOException {
-    super(buildxml);
+  public AbstractHttpTaskTest(final String tasksxml) throws IOException {
+    super(tasksxml);
   }
 
   @Test

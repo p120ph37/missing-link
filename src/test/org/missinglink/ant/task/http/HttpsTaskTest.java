@@ -212,15 +212,11 @@ import org.junit.Before;
 public class HttpsTaskTest extends AbstractHttpTaskTest {
 
   public HttpsTaskTest() throws IOException {
-    super("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n" +
-        "<project>\n" +
-        "  <taskdef name=\"http\" classname=\"org.missinglink.ant.task.http.HttpClientTask\" />\n" +
-        "  <target name=\"simple_get\">\n" +
-        "    <http url=\"${server_uri}${server_context}\">\n" +
-        "      <keystore file=\"${keystore_file}\" password=\"${keystore_password}\" />\n" +
-        "    </http>\n" +
-        "  </target>\n" +
-        "</project>");
+    super("<target name=\"simple_get\">\n" +
+        "  <http url=\"${server_uri}${server_context}\">\n" +
+        "    <keystore file=\"${keystore_file}\" password=\"${keystore_password}\" />\n" +
+        "  </http>\n" +
+        "</target>");
   }
 
   @Before
