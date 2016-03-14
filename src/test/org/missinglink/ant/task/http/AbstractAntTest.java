@@ -222,14 +222,18 @@ public abstract class AbstractAntTest extends AbstractHttpServerTest {
   protected Project project;
   protected final String buildfile;
 
-  public AbstractAntTest(final String buildxml) throws IOException {
+  public AbstractAntTest(final String tasksxml) throws IOException {
 
     super();
 
     final File temp = File.createTempFile("build", ".xml");
     temp.deleteOnExit();
     final BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
-    bw.write(buildxml);
+    bw.write("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n" +
+        "<project>\n" +
+        "  <taskdef name=\"http\" classname=\"org.missinglink.ant.task.http.HttpClientTask\" />\n" +
+        tasksxml +
+        "</project>");
     bw.close();
 
     this.buildfile = temp.getAbsolutePath();
