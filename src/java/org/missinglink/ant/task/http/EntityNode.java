@@ -206,11 +206,13 @@ package org.missinglink.ant.task.http;
 
 import java.io.File;
 
+import org.apache.tools.ant.types.DataType;
+
 /**
  * @author alex.sherwin
- * 
+ *
  */
-public class EntityNode {
+public class EntityNode extends DataType {
 
   protected String text;
   protected File file;
@@ -238,7 +240,7 @@ public class EntityNode {
   }
 
   public void addText(final String text) {
-    this.text = text;
+    this.text = getProject().replaceProperties(text);
   }
 
   public String getText() {
@@ -255,6 +257,8 @@ public class EntityNode {
 
   public boolean isValid() {
     if (null != text && text.length() > 0) {
+      return true;
+    } else if (null != value) {
       return true;
     } else if (null != file) {
       return true;
