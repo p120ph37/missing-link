@@ -204,11 +204,13 @@
 
 package org.missinglink.ant.task.http;
 
+import org.apache.tools.ant.types.DataType;
+
 /**
  * @author alex.sherwin
- * 
+ *
  */
-public class CredentialsNode {
+public class CredentialsNode extends DataType {
 
   protected String username;
   protected String password;
