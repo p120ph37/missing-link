@@ -204,12 +204,10 @@
 
 package org.missinglink.ant.task.http;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.tools.ant.BuildFileRule;
 import org.apache.tools.ant.Project;
 import org.junit.Before;
 import org.junit.Rule;
@@ -218,7 +216,7 @@ import org.missinglink.http.server.AbstractHttpServerTest;
 public abstract class AbstractAntTest extends AbstractHttpServerTest {
 
   @Rule
-  public BuildFileRule buildRule = new BuildFileRule();
+  public LogTargetBuildFileRule buildRule = new LogTargetBuildFileRule();
   protected Project project;
   protected final String buildfile;
 
@@ -228,13 +226,13 @@ public abstract class AbstractAntTest extends AbstractHttpServerTest {
 
     final File temp = File.createTempFile("build", ".xml");
     temp.deleteOnExit();
-    final BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
-    bw.write("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n" +
+    final FileOutputStream fos = new FileOutputStream(temp);
+    fos.write(("<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n" +
         "<project>\n" +
         "  <taskdef name=\"http\" classname=\"org.missinglink.ant.task.http.HttpClientTask\" />\n" +
         tasksxml +
-        "</project>");
-    bw.close();
+        "</project>").getBytes());
+    fos.close();
 
     this.buildfile = temp.getAbsolutePath();
 

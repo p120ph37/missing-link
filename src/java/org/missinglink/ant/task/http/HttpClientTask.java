@@ -229,7 +229,7 @@ import org.missinglink.http.exception.HttpInvocationException;
 
 /**
  * @author alex.sherwin
- * 
+ *
  */
 public class HttpClientTask extends Task {
 
@@ -299,13 +299,15 @@ public class HttpClientTask extends Task {
     if (null != credentials && credentials.isValid()) {
       log("Credentials:\t" + (credentials.isShow() ? credentials.getUsername() + " / " + credentials.getPassword() : "[hidden]"), Project.MSG_VERBOSE);
     }
-    if (httpClient.getHeaders().size() > 0) {
-      log("Headers:\t\tyes", Project.MSG_VERBOSE);
+    if (printRequestHeaders) {
+      log("Headers:\t\t" + (httpClient.getHeaders().size() == 0 ? "no" : "yes"), Project.MSG_INFO);
+    } else {
+      log("Headers:\t\t" + (httpClient.getHeaders().size() == 0 ? "no" : "yes"), Project.MSG_VERBOSE);
+    }
+    if (httpClient.getHeaders().size() > 0 && printRequestHeaders) {
       for (final Entry<String, String> entry : httpClient.getHeaders().entrySet()) {
         log("\t" + entry.getKey() + ": " + entry.getValue());
       }
-    } else {
-      log("Headers:\t\tno", Project.MSG_VERBOSE);
     }
     if (httpClient.getQueryUnencoded().size() > 0) {
       log("Query Parameters:\tyes", Project.MSG_VERBOSE);
@@ -358,19 +360,21 @@ public class HttpClientTask extends Task {
         log("Response Status: " + response.getStatus(), Project.MSG_INFO);
       }
 
-      if (response.getHeaders().size() > 0) {
-        log("Headers:\t\tyes", Project.MSG_VERBOSE);
+      if (printResponseHeaders) {
+        log("Headers:\t\t" + (response.getHeaders().size() == 0 ? "no" : "yes"), Project.MSG_INFO);
+      } else {
+        log("Headers:\t\t" + (response.getHeaders().size() == 0 ? "no" : "yes"), Project.MSG_VERBOSE);
+      }
+      if (response.getHeaders().size() > 0 && printResponseHeaders) {
         for (final Entry<String, List<String>> entry : response.getHeaders().entrySet()) {
           for (final String value : entry.getValue()) {
             if (null == entry.getKey()) {
-              log("\t" + value, Project.MSG_VERBOSE);
+              log("\t" + value);
             } else {
-              log("\t" + entry.getKey() + ": " + value, Project.MSG_VERBOSE);
+              log("\t" + entry.getKey() + ": " + value);
             }
           }
         }
-      } else {
-        log("Headers:\t\tno");
       }
 
       final boolean responseHasEntity = null != response.getEntity();
@@ -440,7 +444,7 @@ public class HttpClientTask extends Task {
   /**
    * For use to fix Issue 13, returns true only if the log level is
    * {@link Project#MSG_INFO}
-   * 
+   *
    * @return
    */
   protected boolean isInfo() {
@@ -450,7 +454,7 @@ public class HttpClientTask extends Task {
   /**
    * For use to fix Issue 13, returns true only if the log level is
    * {@link Project#MSG_VERBOSE} or {@link Project#MSG_DEBUG}
-   * 
+   *
    * @return
    */
   protected boolean isVerbose() {
@@ -569,11 +573,11 @@ public class HttpClientTask extends Task {
     this.url = url;
   }
 
-  public File getOutfile() {
+  public File getOutFile() {
     return outFile;
   }
 
-  public void setOutfile(final File outFile) {
+  public void setOutFile(final File outFile) {
     this.outFile = outFile;
   }
 
@@ -585,11 +589,11 @@ public class HttpClientTask extends Task {
     this.method = method;
   }
 
-  public void setPrintrequest(final boolean printRequest) {
+  public void setPrintRequest(final boolean printRequest) {
     this.printRequest = printRequest;
   }
 
-  public void setPrintresponse(final boolean printResponse) {
+  public void setPrintResponse(final boolean printResponse) {
     this.printResponse = printResponse;
   }
 
@@ -597,15 +601,15 @@ public class HttpClientTask extends Task {
     this.expected = expected;
   }
 
-  public void setFailonunexpected(final boolean failOnUnexpected) {
+  public void setFailOnUnexpected(final boolean failOnUnexpected) {
     this.failOnUnexpected = failOnUnexpected;
   }
 
-  public void setPrintresponseheaders(final boolean printResponseHeaders) {
+  public void setPrintResponseHeaders(final boolean printResponseHeaders) {
     this.printResponseHeaders = printResponseHeaders;
   }
 
-  public void setPrintrequestheaders(final boolean printRequestHeaders) {
+  public void setPrintRequestHeaders(final boolean printRequestHeaders) {
     this.printRequestHeaders = printRequestHeaders;
   }
 
