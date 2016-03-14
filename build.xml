@@ -43,7 +43,7 @@
   </target>
 
   <target name="compile" depends="init">
-    <javac debug="yes" destdir="${ml-ant-http.build.classes.dir}" classpathref="ml-ant-http.compile.classpath" includeantruntime="false">
+    <javac source="1.5" target="1.5" debug="yes" destdir="${ml-ant-http.build.classes.dir}" classpathref="ml-ant-http.compile.classpath" includeantruntime="false">
       <src path="${ml-ant-http.java.src.dir}"/>
     </javac>
   </target>
