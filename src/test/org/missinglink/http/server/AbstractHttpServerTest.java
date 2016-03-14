@@ -252,8 +252,8 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
   protected static final String ECHO_CONTEXT = "/echo";
   protected static final String ECHO_TEXT = "text";
 
-  protected static final String INTERNAL_SERER_ERROR_CONTEXT = "/500";
-  protected static final String INTERNAL_SERER_ERROR_RESPONSE = "Internal Server Error";
+  protected static final String INTERNAL_SERVER_ERROR_CONTEXT = "/500";
+  protected static final String INTERNAL_SERVER_ERROR_RESPONSE = "Internal Server Error";
 
   protected static final String SECURE_CONTEXT = "/secure";
 
@@ -268,6 +268,9 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
 
   protected static final String ECHO_HEADERS_CONTEXT = "/echo-headers";
   protected static final String ECHO_HEADERS_PREFIX = "X-Req-";
+
+  protected static final String KEYSTORE_FILE = "/keystore.jks";
+  protected static final String KEYSTORE_PASSWORD = "password";
 
   protected int httpServerPort = 10080;
   protected int httpsServerPort = 10443;
@@ -301,9 +304,9 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
     httpsServer.setExecutor(Executors.newCachedThreadPool());
     attachHttpHandlers(httpsServer);
 
-    final char[] passphrase = "password".toCharArray();
+    final char[] passphrase = KEYSTORE_PASSWORD.toCharArray();
     final KeyStore ks = KeyStore.getInstance("JKS");
-    ks.load(getClass().getResourceAsStream("/keystore.jks"), passphrase);
+    ks.load(getKeyStore(), passphrase);
 
     final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
     kmf.init(ks, passphrase);
@@ -395,23 +398,23 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
     secureEchoContext.setAuthenticator(getBasicAuthenticator());
 
     // 500 handler
-    server.createContext(INTERNAL_SERER_ERROR_CONTEXT, new HttpHandler() {
+    server.createContext(INTERNAL_SERVER_ERROR_CONTEXT, new HttpHandler() {
       @Override
       public void handle(final HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", "text/plain");
-        exchange.sendResponseHeaders(500, INTERNAL_SERER_ERROR_RESPONSE.getBytes().length);
-        exchange.getResponseBody().write(INTERNAL_SERER_ERROR_RESPONSE.getBytes());
+        exchange.sendResponseHeaders(500, INTERNAL_SERVER_ERROR_RESPONSE.getBytes().length);
+        exchange.getResponseBody().write(INTERNAL_SERVER_ERROR_RESPONSE.getBytes());
         exchange.getResponseBody().close();
       }
     });
 
     // secure 500 handler
-    final HttpContext secure500Context = server.createContext(SECURE_CONTEXT + INTERNAL_SERER_ERROR_CONTEXT, new HttpHandler() {
+    final HttpContext secure500Context = server.createContext(SECURE_CONTEXT + INTERNAL_SERVER_ERROR_CONTEXT, new HttpHandler() {
       @Override
       public void handle(final HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", "text/plain");
-        exchange.sendResponseHeaders(500, INTERNAL_SERER_ERROR_RESPONSE.getBytes().length);
-        exchange.getResponseBody().write(INTERNAL_SERER_ERROR_RESPONSE.getBytes());
+        exchange.sendResponseHeaders(500, INTERNAL_SERVER_ERROR_RESPONSE.getBytes().length);
+        exchange.getResponseBody().write(INTERNAL_SERVER_ERROR_RESPONSE.getBytes());
         exchange.getResponseBody().close();
       }
     });
@@ -515,7 +518,7 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
   protected void attachSSLSocketFactory(final HttpsURLConnection conn) throws Exception {
 
     final KeyStore ks = KeyStore.getInstance("JKS");
-    ks.load(getClass().getResourceAsStream("/keystore.jks"), "password".toCharArray());
+    ks.load(getKeyStore(), KEYSTORE_PASSWORD.toCharArray());
     final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(ks);
 
@@ -570,7 +573,7 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
     }
 
     final KeyStore ks = KeyStore.getInstance("JKS");
-    ks.load(getClass().getResourceAsStream("/keystore.jks"), "password".toCharArray());
+    ks.load(getKeyStore(), KEYSTORE_PASSWORD.toCharArray());
     final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(ks);
 
@@ -585,5 +588,13 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
     out.write(entity);
     out.close();
     return con;
+  }
+
+  protected InputStream getKeyStore() {
+    return getClass().getResourceAsStream(KEYSTORE_FILE);
+  }
+
+  protected String getKeyStoreFile() {
+    return getClass().getResource(KEYSTORE_FILE).getFile();
   }
 }
