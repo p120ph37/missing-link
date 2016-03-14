@@ -206,11 +206,13 @@ package org.missinglink.ant.task.http;
 
 import java.io.File;
 
+import org.apache.tools.ant.types.DataType;
+
 /**
  * @author alex.sherwin
- * 
+ *
  */
-public class KeyStoreNode {
+public class KeyStoreNode extends DataType {
 
   protected File file;
   protected String password;

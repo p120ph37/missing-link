@@ -358,20 +358,17 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
     server.createContext(ECHO_CONTEXT, new HttpHandler() {
       @Override
       public void handle(final HttpExchange exchange) throws IOException {
-        String responseEntity = "";
+        byte[] responseEntity = new byte[0];
         if ("POST".equalsIgnoreCase(exchange.getRequestMethod()) || "PUT".equalsIgnoreCase(exchange.getRequestMethod())) {
-          responseEntity = StreamUtils.inputStreamToString(exchange.getRequestBody());
+          responseEntity = StreamUtils.inputStreamToByteArray(exchange.getRequestBody());
         } else if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-          responseEntity = getQueryParams(exchange.getRequestURI()).get(ECHO_TEXT);
+          responseEntity = getQueryParams(exchange.getRequestURI()).get(ECHO_TEXT).getBytes();
         }
-        exchange.getResponseHeaders().set("Content-Type", "text/plain");
-        exchange.sendResponseHeaders(200, responseEntity.getBytes().length);
-        writeEntity(exchange, responseEntity);
+        final List<String> contentType = exchange.getRequestHeaders().get("Content-Type");
+        exchange.getResponseHeaders().set("Content-Type", contentType != null ? contentType.get(0) : "text/plain");
+        exchange.sendResponseHeaders(200, responseEntity.length);
+        exchange.getResponseBody().write(responseEntity);
         exchange.close();
-      }
-
-      protected void writeEntity(final HttpExchange httpExchange, final String entity) throws IOException {
-        httpExchange.getResponseBody().write(entity.getBytes());
       }
     });
 
@@ -379,20 +376,17 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
     final HttpContext secureEchoContext = server.createContext(SECURE_CONTEXT + ECHO_CONTEXT, new HttpHandler() {
       @Override
       public void handle(final HttpExchange exchange) throws IOException {
-        String responseEntity = "";
+        byte[] responseEntity = new byte[0];
         if ("POST".equalsIgnoreCase(exchange.getRequestMethod()) || "PUT".equalsIgnoreCase(exchange.getRequestMethod())) {
-          responseEntity = StreamUtils.inputStreamToString(exchange.getRequestBody());
+          responseEntity = StreamUtils.inputStreamToByteArray(exchange.getRequestBody());
         } else if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-          responseEntity = getQueryParams(exchange.getRequestURI()).get(ECHO_TEXT);
+          responseEntity = getQueryParams(exchange.getRequestURI()).get(ECHO_TEXT).getBytes();
         }
-        exchange.getResponseHeaders().set("Content-Type", "text/plain");
-        exchange.sendResponseHeaders(200, responseEntity.getBytes().length);
-        writeEntity(exchange, responseEntity);
+        final List<String> contentType = exchange.getRequestHeaders().get("Content-Type");
+        exchange.getResponseHeaders().set("Content-Type", contentType != null ? contentType.get(0) : "text/plain");
+        exchange.sendResponseHeaders(200, responseEntity.length);
+        exchange.getResponseBody().write(responseEntity);
         exchange.close();
-      }
-
-      protected void writeEntity(final HttpExchange httpExchange, final String entity) throws IOException {
-        httpExchange.getResponseBody().write(entity.getBytes());
       }
     });
     secureEchoContext.setAuthenticator(getBasicAuthenticator());

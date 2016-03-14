@@ -207,11 +207,13 @@ package org.missinglink.ant.task.http;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tools.ant.types.DataType;
+
 /**
  * @author alex.sherwin
- * 
+ *
  */
-public class HeadersNode {
+public class HeadersNode extends DataType {
 
   protected List<HeaderNode> headers = new ArrayList<HeaderNode>();
 

@@ -204,11 +204,13 @@
 
 package org.missinglink.ant.task.http;
 
+import org.apache.tools.ant.types.DataType;
+
 /**
  * @author alex.sherwin
- * 
+ *
  */
-public class HeaderNode {
+public class HeaderNode extends DataType {
 
   protected String name;
   protected String value;
