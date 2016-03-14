@@ -279,7 +279,7 @@ public class EntityHeaderTest extends AbstractAntTest {
     project.setProperty("header_value1", "text/xml");
     project.setProperty("header_name2", "Accept");
     project.setProperty("header_value2", "text/plain, image/png");
-    final List<String> taskLog = buildRule.logExecuteTarget("headers_get", Project.MSG_DEBUG);
+    final List<String> taskLog = buildRule.logExecuteTarget("silent_request_headers", Project.MSG_DEBUG);
 
     assertThat(taskLog, not(hasItem(equalTo("[http] \tContent-Type: text/xml"))));
     assertThat(taskLog, not(hasItem(equalTo("[http] \tAccept: text/plain, image/png"))));
@@ -294,7 +294,7 @@ public class EntityHeaderTest extends AbstractAntTest {
     project.setProperty("header_value1", "text/xml");
     project.setProperty("header_name2", "Accept");
     project.setProperty("header_value2", "text/plain, image/png");
-    final List<String> taskLog = buildRule.logExecuteTarget("headers_get", Project.MSG_DEBUG);
+    final List<String> taskLog = buildRule.logExecuteTarget("silent_response_headers", Project.MSG_DEBUG);
 
     assertThat(taskLog, hasItem(equalTo("[http] \tContent-Type: text/xml")));
     assertThat(taskLog, hasItem(equalTo("[http] \tAccept: text/plain, image/png")));
