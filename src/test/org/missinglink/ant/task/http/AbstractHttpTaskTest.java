@@ -202,136 +202,70 @@
  *   limitations under the License.
  */
 
-package org.missinglink.http.client;
+package org.missinglink.ant.task.http;
 
-import java.io.IOException;
+import static org.hamcrest.CoreMatchers.both;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.Assert;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildFileRule;
+import org.apache.tools.ant.Project;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.missinglink.http.exception.HttpCertificateException;
-import org.missinglink.http.exception.HttpClientException;
 import org.missinglink.http.server.AbstractHttpServerTest;
 
-/**
- * @author alex.sherwin
- *
- */
-public class HttpsClientTest extends AbstractHttpServerTest {
+public abstract class AbstractHttpTaskTest extends AbstractHttpServerTest {
 
-  public HttpsClientTest() {
+  protected static final String HTTP_BUILDFILE = "http-test.xml";
+  protected static final String HTTPS_BUILDFILE = "https-test.xml";
+
+  @Rule
+  public BuildFileRule buildRule = new BuildFileRule();
+  protected Project project;
+  protected final String buildfile;
+
+  public AbstractHttpTaskTest(final String buildfile) {
     super();
+    this.buildfile = buildfile;
   }
 
   @Before
-  public void before() throws Exception {
-    startHttpsServer();
-  }
-
-  @After
-  public void after() throws IOException {
-    stopHttpsServer();
-  }
-
-  @Test(expected = HttpCertificateException.class)
-  public void testInvalidTrustStore() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + PING_CONTEXT).toHttpClient();
-    httpClient.invoke();
+  public void beforeBuildfile() throws Exception {
+    buildRule.configureProject(getClass().getResource(buildfile).getFile());
+    project = buildRule.getProject();
   }
 
   @Test
-  public void testGetWithEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + PING_CONTEXT).keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(PING_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(PING_RESPONSE, response.getEntityAsString());
-    Assert.assertEquals(200, response.getStatus());
+  public void testSimpleGet200() {
+    project.setProperty("server_context", PING_CONTEXT);
+    buildRule.executeTarget("simple_get");
+    assertThat(buildRule.getLog(), both(startsWith("HTTP GET ")).and(endsWith("Status: 200")));
   }
 
   @Test
-  public void testGetSecureWithEntityAuthFailure() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + SECURE_CONTEXT + PING_CONTEXT).keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertEquals(401, response.getStatus());
+  public void testSimpleGet404() {
+    project.setProperty("server_context", "/doesnt/exist");
+    try {
+      buildRule.executeTarget("simple_get");
+      fail("Target should have thrown a BuildException");
+    } catch (final BuildException ex) {
+      assertThat(ex.getMessage(), startsWith("Expected Status [200] but got [404] for URI"));
+    }
   }
 
   @Test
-  public void testGetSecureWithEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + SECURE_CONTEXT + PING_CONTEXT).credentials(USERNAME, PASSWORD).keyStore(getKeyStore(), KEYSTORE_PASSWORD)
-        .toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(PING_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(PING_RESPONSE, response.getEntityAsString());
-    Assert.assertEquals(200, response.getStatus());
-  }
-
-  @Test
-  public void test404() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + "/doesnt/exist").keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertEquals(404, response.getStatus());
-  }
-
-  @Test
-  public void test500() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + INTERNAL_SERVER_ERROR_CONTEXT).keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(INTERNAL_SERVER_ERROR_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(500, response.getStatus());
-  }
-
-  @Test
-  public void test500Secured() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + SECURE_CONTEXT + INTERNAL_SERVER_ERROR_CONTEXT).credentials(USERNAME, PASSWORD)
-        .keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals(INTERNAL_SERVER_ERROR_RESPONSE.getBytes(), response.getEntity());
-    Assert.assertEquals(500, response.getStatus());
-  }
-
-  @Test
-  public void testPostWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + ECHO_CONTEXT).post().entity("Hello World").keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
-  }
-
-  @Test
-  public void testPostSecuredWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + SECURE_CONTEXT + ECHO_CONTEXT).post().entity("Hello World").credentials(USERNAME, PASSWORD)
-        .keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
-  }
-
-  @Test
-  public void testPutWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + ECHO_CONTEXT).put().entity("Hello World").keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
-  }
-
-  @Test
-  public void testPutSecuredWithResponseEntity() throws HttpClientException, IOException {
-    final HttpClient httpClient = HttpClient.uri(getHttpsServerUri() + SECURE_CONTEXT + ECHO_CONTEXT).put().entity("Hello World").credentials(USERNAME, PASSWORD)
-        .keyStore(getKeyStore(), KEYSTORE_PASSWORD).toHttpClient();
-    final HttpResponse response = httpClient.invoke();
-    Assert.assertNotNull(response);
-    Assert.assertArrayEquals("Hello World".getBytes(), response.getEntity());
-    Assert.assertEquals(200, response.getStatus());
+  public void testSimpleGet500() {
+    project.setProperty("server_context", INTERNAL_SERVER_ERROR_CONTEXT);
+    try {
+      buildRule.executeTarget("simple_get");
+      fail("Target should have thrown a BuildException");
+    } catch (final BuildException ex) {
+      assertThat(ex.getMessage(), startsWith("Expected Status [200] but got [500] for URI"));
+    }
   }
 
 }
