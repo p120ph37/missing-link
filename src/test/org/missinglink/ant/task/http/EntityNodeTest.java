@@ -204,14 +204,8 @@
 
 package org.missinglink.ant.task.http;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.both;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.missinglink.tools.StreamUtils.inputStreamToByteArray;
 
 import java.io.File;
@@ -267,7 +261,6 @@ public class EntityNodeTest extends AbstractAntTest {
     project.setProperty("put_entity", null);
     buildRule.executeTarget("value_put");
 
-    assertThat(buildRule.getLog(), both(startsWith("HTTP PUT ")).and(endsWith("Status: 200")));
     assertEquals(ECHO_TEXT, project.getProperty("put_entity"));
   }
 
@@ -278,7 +271,6 @@ public class EntityNodeTest extends AbstractAntTest {
     project.setProperty("put_entity", null);
     buildRule.executeTarget("text_put");
 
-    assertThat(buildRule.getLog(), both(startsWith("HTTP PUT ")).and(endsWith("Status: 200")));
     assertEquals(ECHO_TEXT, project.getProperty("put_entity"));
   }
 
@@ -295,7 +287,6 @@ public class EntityNodeTest extends AbstractAntTest {
     project.setProperty("put_entity", null);
     buildRule.executeTarget("file_put");
 
-    assertThat(buildRule.getLog(), both(startsWith("HTTP PUT ")).and(endsWith("Status: 200")));
     assertEquals(ECHO_TEXT, project.getProperty("put_entity"));
   }
 
@@ -317,7 +308,6 @@ public class EntityNodeTest extends AbstractAntTest {
     final byte[] outBytes = inputStreamToByteArray(outStream);
     outStream.close();
 
-    assertThat(buildRule.getLog(), allOf(startsWith("HTTP PUT "), containsString("Status: 200"), containsString("Entity written to file:")));
     assertArrayEquals("Input and output data do not match", inBytes, outBytes);
   }
 

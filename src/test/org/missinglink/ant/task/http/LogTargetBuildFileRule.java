@@ -204,54 +204,76 @@
 
 package org.missinglink.ant.task.http;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.junit.Test;
+import org.apache.tools.ant.BuildEvent;
+import org.apache.tools.ant.BuildFileRule;
+import org.apache.tools.ant.BuildListener;
 
-public abstract class AbstractHttpTaskTest extends AbstractAntTest {
+public class LogTargetBuildFileRule extends BuildFileRule {
 
-  public AbstractHttpTaskTest(final String tasksxml) throws IOException {
-    super(tasksxml);
-  }
+  public List<String> logExecuteTarget(final String targetName, final int logLevel) {
 
-  @Test
-  public void testSimpleGet200() {
-    project.setProperty("server_context", PING_CONTEXT);
-    final List<String> taskLog = buildRule.logExecuteTarget("simple_get", Project.MSG_DEBUG);
+    final List<String> taskLog = new ArrayList<String>() {
+      private static final long serialVersionUID = 1L;
 
-    assertThat(taskLog, hasItem(startsWith("[http] HTTP GET ")));
-    assertThat(taskLog, hasItem(equalTo("[http] Status:\t\t200")));
-  }
+      @Override
+      public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        for (final String logEntry : this) {
+          sb.append(logEntry);
+          sb.append("\n");
+        }
+        return sb.toString();
+      }
+    };
 
-  @Test
-  public void testSimpleGet404() {
-    project.setProperty("server_context", "/doesnt/exist");
+    final BuildListener listener = new BuildListener() {
+      @Override
+      public void buildStarted(final BuildEvent event) {
+      }
+
+      @Override
+      public void buildFinished(final BuildEvent event) {
+      }
+
+      @Override
+      public void targetStarted(final BuildEvent event) {
+      }
+
+      @Override
+      public void targetFinished(final BuildEvent event) {
+      }
+
+      @Override
+      public void taskStarted(final BuildEvent event) {
+      }
+
+      @Override
+      public void taskFinished(final BuildEvent event) {
+      }
+
+      @Override
+      public void messageLogged(final BuildEvent event) {
+        if (event.getPriority() > logLevel) {
+          return;
+        }
+        if (null == event.getTarget() || !targetName.equals(event.getTarget().getName())) {
+          return;
+        }
+        taskLog.add(String.format("[%s] %s", event.getTask().getTaskName(), event.getMessage()));
+      }
+    };
+
+    getProject().addBuildListener(listener);
     try {
-      buildRule.executeTarget("simple_get");
-      fail("Target should have thrown a BuildException");
-    } catch (final BuildException ex) {
-      assertThat(ex.getMessage(), startsWith("Expected Status [200] but got [404] for URI"));
+      super.executeTarget(targetName);
+    } finally {
+      getProject().removeBuildListener(listener);
     }
-  }
 
-  @Test
-  public void testSimpleGet500() {
-    project.setProperty("server_context", INTERNAL_SERVER_ERROR_CONTEXT);
-    try {
-      buildRule.executeTarget("simple_get");
-      fail("Target should have thrown a BuildException");
-    } catch (final BuildException ex) {
-      assertThat(ex.getMessage(), startsWith("Expected Status [200] but got [500] for URI"));
-    }
+    return taskLog;
   }
 
 }

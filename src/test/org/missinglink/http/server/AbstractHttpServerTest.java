@@ -482,6 +482,20 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
       }
     });
 
+    // echo the headers back with a prefix
+    server.createContext(SECURE_CONTEXT + ECHO_HEADERS_CONTEXT, new HttpHandler() {
+      @Override
+      public void handle(final HttpExchange exchange) throws IOException {
+        final Map<String, List<String>> reqHeaders = new HashMap<String, List<String>>();
+        for (final Entry<String, List<String>> header : exchange.getRequestHeaders().entrySet()) {
+          reqHeaders.put(ECHO_HEADERS_PREFIX + header.getKey(), header.getValue());
+        }
+        exchange.getResponseHeaders().putAll(reqHeaders);
+        exchange.sendResponseHeaders(200, 0);
+        exchange.close();
+      }
+    });
+
   }
 
   protected Map<String, String> getQueryParams(final URI uri) throws UnsupportedEncodingException {
