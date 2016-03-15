@@ -217,9 +217,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EntityHeaderTest extends AbstractAntTest {
+public class HeaderNodeTest extends AbstractAntTest {
 
-  public EntityHeaderTest() throws IOException {
+  public HeaderNodeTest() throws IOException {
     super("<target name=\"headers_get\">\n" +
         "  <http url=\"${server_uri}${server_context}\" method=\"GET\">\n" +
         "    <headers>\n" +
