@@ -269,6 +269,8 @@ public class HttpClientUriTest {
     Assert.assertEquals("http://host/context/longer/", client.getUri());
     client = HttpClient.uri("http://host/context/longer/file.html").toHttpClient();
     Assert.assertEquals("http://host/context/longer/file.html", client.getUri());
+    client = HttpClient.uri("http://host/context/encoded%20path/file.html").toHttpClient();
+    Assert.assertEquals("http://host/context/encoded%20path/file.html", client.getUri());
     client = HttpClient.uri("http://host/context/longer/?qp").toHttpClient();
     Assert.assertEquals("http://host/context/longer/?qp", client.getUri());
     client = HttpClient.uri("http://host/context/longer/file.html?qp").toHttpClient();
