@@ -216,7 +216,6 @@ import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.missinglink.http.server.AbstractHttpServerTest;
 
 public class EntityNodeTest extends AbstractAntTest {
 
@@ -292,7 +291,7 @@ public class EntityNodeTest extends AbstractAntTest {
 
   @Test
   public void testBinaryPut() throws IOException {
-    final File inFile = new File(AbstractHttpServerTest.class.getResource(HW_ZIP).getFile());
+    final File inFile = new File(getClass().getResource(HW_ZIP).getFile());
     final File outFile = File.createTempFile(HW_ZIP, ".out");
     outFile.deleteOnExit();
 
