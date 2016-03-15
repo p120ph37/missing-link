@@ -593,7 +593,7 @@ public class HttpClient {
         httpClient.protocol = safeUri.getScheme();
         httpClient.host = safeUri.getHost();
         httpClient.port = safeUri.getPort() != -1 ? safeUri.getPort() : null;
-        httpClient.path = safeUri.getPath();
+        httpClient.path = safeUri.getRawPath();
         parseQuery(query);
         if (!safeUri.getScheme().toLowerCase().equals("http") && !safeUri.getScheme().toLowerCase().equals("https")) {
           throw new InvalidUriException(uri);
