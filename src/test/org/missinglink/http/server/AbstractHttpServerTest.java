@@ -263,8 +263,8 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
   protected static final String HW_ZIP_CONTEXT = "/hwzip";
   protected static final String HW_PNG_CONTEXT = "/hwpng";
 
-  protected static final String HW_ZIP = "hw.zip";
-  protected static final String HW_PNG = "hw.png";
+  protected static final String HW_ZIP = "/hw.zip";
+  protected static final String HW_PNG = "/hw.png";
 
   protected static final String ECHO_HEADERS_CONTEXT = "/echo-headers";
   protected static final String ECHO_HEADERS_PREFIX = "X-Req-";
