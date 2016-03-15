@@ -206,12 +206,11 @@ package org.missinglink.http.client;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.missinglink.http.client.HttpClient;
 import org.missinglink.http.exception.InvalidUriException;
 
 /**
  * @author alex.sherwin
- * 
+ *
  */
 public class HttpClientUriTest {
 
@@ -290,5 +289,7 @@ public class HttpClientUriTest {
     Assert.assertEquals("http://host/context/longer/?qp=value+with+spaces&qp2=value2", client.getUri());
     client = HttpClient.uri("http://host/context/longer/file.html?qp=value with spaces&qp2=value2").toHttpClient();
     Assert.assertEquals("http://host/context/longer/file.html?qp=value+with+spaces&qp2=value2", client.getUri());
+    client = HttpClient.uri("http://host/context/longer/file.html?qp2=value2&qp1=value1&qp3=value3&qp4=value4").toHttpClient();
+    Assert.assertEquals("http://host/context/longer/file.html?qp2=value2&qp1=value1&qp3=value3&qp4=value4", client.getUri());
   }
 }
