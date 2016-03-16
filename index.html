@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Missing-link by p120ph37</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Missing-link</h1>
+          <h2>Automatically exported from code.google.com/p/missing-link</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/p120ph37/missing-link/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/p120ph37/missing-link/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/p120ph37/missing-link" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p><a href="https://github.com/p120ph37/missing-link/releases/latest"><img src="https://img.shields.io/github/release/p120ph37/missing-link.svg" alt="GitHub release"></a>
+<a href="https://github.com/p120ph37/missing-link/blob/master/LICENSE"><img src="https://img.shields.io/github/license/p120ph37/missing-link.svg" alt="GitHub license"></a></p>
+
+<p>Development:</p>
+
+<p><a href="https://travis-ci.org/p120ph37/missing-link"><img src="https://travis-ci.org/p120ph37/missing-link.svg?branch=master" alt="Build Status"></a>
+<a href="https://bintray.com/p120ph37/generic/missing-link/_latestVersion"><img src="https://img.shields.io/bintray/v/p120ph37/generic/missing-link.svg" alt="Download Snapshot"></a></p>
+
+<h1>
+<a id="missing-link-ant-http-task" class="anchor" href="#missing-link-ant-http-task" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>missing link Ant http task</h1>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>The missing link ant http task was created due to the lack of a full featured, usable and liberally licensed ant HTTP task. This ant task is coded from scratch utilizing only core Java classes; as such it does not require any third party dependencies at runtime.</p>
+
+<p>This ant task also simplifies common aspects of HTTP communication, which other libraries seem to needlessly complicate, such as: authentication, TLS/SSL and HTTP methods other then GET and POST.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>The missing link ant http task is licensed under the Apache 2.0 license, a copy of the license can be found with the missing link ant http task distribution or at <a href="http://www.apache.org/licenses/LICENSE-2.0.html">http://www.apache.org/licenses/LICENSE-2.0.html</a>.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<p>The missing link ant http task was created with the following features in mind:</p>
+
+<ul>
+<li>No third party library dependencies.</li>
+<li>TLS/SSL support on a configuration, per-connection basis, not JVM-wide.</li>
+<li>Support for HTTP methods GET, POST, PUT, OPTIONS, HEAD and TRACE.</li>
+<li>Support for BASIC authentication.</li>
+<li>Support for multiple URL/URI building options.</li>
+<li>Support for specifying arbitrary HTTP request headers.</li>
+<li>Support for specifying a request entity in-line or through a file.</li>
+<li>Options on what information to print to the output.</li>
+<li>Options to govern what response status codes are expected, and what should cause a build-failing exception.</li>
+</ul>
+
+<h2>
+<a id="ant-task-xml-elements" class="anchor" href="#ant-task-xml-elements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ant task XML elements</h2>
+
+<h3>
+<a id="http" class="anchor" href="#http" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>http</h3>
+
+<h4>
+<a id="supported-parameters" class="anchor" href="#supported-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>supported parameters:</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Default</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>url</code></strong></td>
+<td>HTTP URL</td>
+<td>Yes</td>
+<td></td>
+<td><code>http://www.google.com</code></td>
+</tr>
+<tr>
+<td><strong><code>method</code></strong></td>
+<td>HTTP method</td>
+<td>No</td>
+<td><code>GET</code></td>
+<td>
+<code>GET</code>, <code>PUT</code>, <code>POST</code>, etc.</td>
+</tr>
+<tr>
+<td><strong><code>printRequest</code></strong></td>
+<td>Print request entity</td>
+<td>No</td>
+<td><code>false</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>printResponse</code></strong></td>
+<td>Print response entiry</td>
+<td>No</td>
+<td><code>false</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>printRequestHeaders</code></strong></td>
+<td>Print request headers</td>
+<td>No</td>
+<td><code>true</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>printResponseHeaders</code></strong></td>
+<td>Print response headers</td>
+<td>No</td>
+<td><code>true</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>failOnUnexpected</code></strong></td>
+<td>Fail on unexpected status</td>
+<td>No</td>
+<td><code>true</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>statusProperty</code></strong></td>
+<td>Property to save status to</td>
+<td>No</td>
+<td></td>
+<td><code>http.status</code></td>
+</tr>
+<tr>
+<td><strong><code>update</code></strong></td>
+<td>Update/overwrite outfile</td>
+<td>No</td>
+<td><code>true</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>entityProperty</code></strong></td>
+<td>Write response entity to prop</td>
+<td>No</td>
+<td></td>
+<td><code>response.entity</code></td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>example:</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span>
+  <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>
+  <span class="pl-e">method</span>=<span class="pl-s"><span class="pl-pds">"</span>GET<span class="pl-pds">"</span></span>
+  <span class="pl-e">printRequest</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>
+  <span class="pl-e">printResponse</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+  <span class="pl-e">printRequestHeaders</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+  <span class="pl-e">printResponseHeaders</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>
+  <span class="pl-e">expected</span>=<span class="pl-s"><span class="pl-pds">"</span>200<span class="pl-pds">"</span></span>
+  <span class="pl-e">failOnUnexpected</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>
+/&gt;</pre></div>
+
+<h3>
+<a id="httpcredentials" class="anchor" href="#httpcredentials" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>http/credentials</h3>
+
+<h4>
+<a id="supported-parameters-1" class="anchor" href="#supported-parameters-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>supported parameters:</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Default</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>username</code></strong></td>
+<td>HTTP Basic username</td>
+<td>Yes</td>
+<td></td>
+<td><code>john.doe</code></td>
+</tr>
+<tr>
+<td><strong><code>password</code></strong></td>
+<td>HTTP Basic password</td>
+<td>No</td>
+<td></td>
+<td><code>p@55w0rd</code></td>
+</tr>
+<tr>
+<td><strong><code>show</code></strong></td>
+<td>Print the credentials</td>
+<td>No</td>
+<td><code>false</code></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example-1" class="anchor" href="#example-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>example:</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">credentials</span> <span class="pl-e">username</span>=<span class="pl-s"><span class="pl-pds">"</span>john.doe<span class="pl-pds">"</span></span> <span class="pl-e">password</span>=<span class="pl-s"><span class="pl-pds">"</span>p@55w0rd<span class="pl-pds">"</span></span> /&gt;
+&lt;/<span class="pl-ent">http</span>&gt;</pre></div>
+
+<h3>
+<a id="httpkeystore" class="anchor" href="#httpkeystore" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>http/keystore</h3>
+
+<h4>
+<a id="supported-parameters-2" class="anchor" href="#supported-parameters-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>supported parameters:</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Default</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>file</code></strong></td>
+<td>KeyStore file</td>
+<td>Yes</td>
+<td></td>
+<td><code>/path/to/keystore.jks</code></td>
+</tr>
+<tr>
+<td><strong><code>password</code></strong></td>
+<td>KeyStore password</td>
+<td>No</td>
+<td></td>
+<td><code>p@55w0rd</code></td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example-2" class="anchor" href="#example-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>example:</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">keystore</span> <span class="pl-e">file</span>=<span class="pl-s"><span class="pl-pds">"</span>/path/to/keystore.jks<span class="pl-pds">"</span></span> <span class="pl-e">password</span>=<span class="pl-s"><span class="pl-pds">"</span>p@55w0rd<span class="pl-pds">"</span></span> /&gt;
+&lt;/<span class="pl-ent">http</span>&gt;</pre></div>
+
+<h3>
+<a id="httpheadersheader" class="anchor" href="#httpheadersheader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>http/headers/header</h3>
+
+<h4>
+<a id="supported-parameters-3" class="anchor" href="#supported-parameters-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>supported parameters:</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Default</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>name</code></strong></td>
+<td>Header name</td>
+<td>Yes</td>
+<td></td>
+<td><code>Accept</code></td>
+</tr>
+<tr>
+<td><strong><code>value</code></strong></td>
+<td>Header value</td>
+<td>No</td>
+<td></td>
+<td><code>application/xml,*/*</code></td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example-3" class="anchor" href="#example-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>example:</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">headers</span>&gt;
+    &lt;<span class="pl-ent">header</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>Accept<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>application/xml,*/*<span class="pl-pds">"</span></span> /&gt;
+    &lt;<span class="pl-ent">header</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>Content-Type<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>application/xml<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">headers</span>&gt;
+&lt;/<span class="pl-ent">http</span>&gt;</pre></div>
+
+<h3>
+<a id="httpqueryparameter" class="anchor" href="#httpqueryparameter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>http/query/parameter</h3>
+
+<h4>
+<a id="supported-parameters-4" class="anchor" href="#supported-parameters-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>supported parameters:</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Default</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>name</code></strong></td>
+<td>Query parameter name</td>
+<td>Yes</td>
+<td></td>
+<td><code>qp</code></td>
+</tr>
+<tr>
+<td><strong><code>value</code></strong></td>
+<td>Query parameter value</td>
+<td>No</td>
+<td></td>
+<td><code>value123</code></td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example-4" class="anchor" href="#example-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>example:</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">query</span>&gt;
+    &lt;<span class="pl-ent">parameter</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>qp1<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>value1<span class="pl-pds">"</span></span> /&gt;
+    &lt;<span class="pl-ent">parameter</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>qp2<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>value2<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">query</span>&gt;
+&lt;/<span class="pl-ent">http</span>&gt;</pre></div>
+
+<h3>
+<a id="httpentity" class="anchor" href="#httpentity" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>http/entity</h3>
+
+<h4>
+<a id="supported-parameters-5" class="anchor" href="#supported-parameters-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>supported parameters:</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Default</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>file</code></strong></td>
+<td>File to read entity from</td>
+<td>No</td>
+<td></td>
+<td><code>request.xml</code></td>
+</tr>
+<tr>
+<td><strong><code>binary</code></strong></td>
+<td>Treat entity as binary</td>
+<td>False</td>
+<td></td>
+<td>
+<code>true</code> or <code>false</code>
+</td>
+</tr>
+<tr>
+<td><strong><code>value</code></strong></td>
+<td>Value to use as entity</td>
+<td>No</td>
+<td></td>
+<td><code>${my.prop}</code></td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="example-5" class="anchor" href="#example-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>example:</h4>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">entity</span> <span class="pl-e">file</span>=<span class="pl-s"><span class="pl-pds">"</span>request.zip<span class="pl-pds">"</span></span> <span class="pl-e">binary</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span> /&gt;
+&lt;/<span class="pl-ent">http</span>&gt;</pre></div>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://google.com<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">entity</span>&gt;<span class="pl-s"><span class="pl-pds">&lt;![CDATA[</span>Request Entity<span class="pl-pds">]]&gt;</span></span>&lt;/<span class="pl-ent">entity</span>&gt;
+&lt;/<span class="pl-ent">http</span>&gt;</pre></div>
+
+<h2>
+<a id="ant-configuration" class="anchor" href="#ant-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ant configuration</h2>
+
+<p>The following is a basic example of how to import and use the missing link ant http task:</p>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">project</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>ml-ant-http<span class="pl-pds">"</span></span> <span class="pl-e">basedir</span>=<span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span> <span class="pl-e">default</span>=<span class="pl-s"><span class="pl-pds">"</span>http-get<span class="pl-pds">"</span></span>&gt;
+
+  &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>ml-ant-http.jar<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>ml-ant-http-1.0.jar<span class="pl-pds">"</span></span> /&gt;
+
+  &lt;<span class="pl-ent">fileset</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>runtime.libs<span class="pl-pds">"</span></span> <span class="pl-e">dir</span>=<span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">include</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>${ml-ant-http.jar}<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">fileset</span>&gt;
+
+  &lt;<span class="pl-ent">path</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>runtime.classpath<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">fileset</span> <span class="pl-e">refid</span>=<span class="pl-s"><span class="pl-pds">"</span>runtime.libs<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">path</span>&gt;
+
+  &lt;<span class="pl-ent">taskdef</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>http<span class="pl-pds">"</span></span> <span class="pl-e">classname</span>=<span class="pl-s"><span class="pl-pds">"</span>org.missinglink.ant.task.http.HttpClientTask<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">classpath</span> <span class="pl-e">refid</span>=<span class="pl-s"><span class="pl-pds">"</span>runtime.classpath<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">taskdef</span>&gt;
+
+  &lt;<span class="pl-ent">target</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>http-get<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">http</span> <span class="pl-e">url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.google.com<span class="pl-pds">"</span></span> /&gt;
+  &lt;/<span class="pl-ent">target</span>&gt;
+
+&lt;/<span class="pl-ent">project</span>&gt;</pre></div>
+        </section>
+
+        <footer>
+          Missing-link is maintained by <a href="https://github.com/p120ph37">p120ph37</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
