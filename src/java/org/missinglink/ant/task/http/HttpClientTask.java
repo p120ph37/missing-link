@@ -529,6 +529,7 @@ public class HttpClientTask extends Task {
           }
 
           builder = builder.entity(new ByteArrayInputStream(os.toByteArray()), entity.getBinary());
+          is.close();
         } else if (null != entity.getValue() && entity.getValue().length() > 0) {
           // 2. prefer value attribute
           builder = builder.entity(entity.getValue());
