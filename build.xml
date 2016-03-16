@@ -1,5 +1,18 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="ml-ant-http" default="dist" basedir=".">
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ml-ant-http" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- get Ivy -->
+  <property name="ivy.version" value="2.4.0"/>
+  <property name="ivy.jar" value=".ivy-${ivy.version}.jar"/>
+  <target name="ivy:check-download">
+    <available file="${ivy.jar}" property="ivy.jar.exist"/>
+  </target>
+  <target name="ivy:download" depends="ivy:check-download" unless="ivy.jar.exist">
+    <get src="http://central.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" dest="${ivy.jar}" usetimestamp="true"/>
+  </target>
+  <target name="ivy:init" depends="ivy:download">
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
+  </target>
 
   <property name="ml-ant-http.lib.dir" location="lib"/>
   <property name="ml-ant-http.src.dir" location="src"/>
@@ -33,18 +46,22 @@
     <mkdir dir="${ml-ant-http.dist.jar.dir}"/>
   </target>
 
-  <target name="compile" depends="init">
+  <target name="ivy:resolve" depends="ivy:init">
+    <ivy:resolve file="ivy.xml" />
+    <ivy:cachepath pathid="compile.classpath" conf="compile" type="jar"/>
+    <ivy:cachepath pathid="test.classpath" conf="test" type="jar"/>
+  </target>
+
+  <target name="compile" depends="init,ivy:resolve">
     <javac source="1.5" target="1.5" debug="yes" destdir="${ml-ant-http.build.classes.dir}" includeantruntime="false">
       <src path="${ml-ant-http.java.src.dir}"/>
-      <classpath>
-        <fileset dir="${ml-ant-http.lib.dir}" includes="**/*.jar"/>
-      </classpath>
+      <classpath refid="compile.classpath" />
     </javac>
     <javac source="1.5" target="1.5" debug="yes" destdir="${ml-ant-http.build.tests.dir}" includeantruntime="false">
       <src path="${ml-ant-http.test.src.dir}"/>
       <classpath>
         <pathelement path="${ml-ant-http.build.classes.dir}"/>
-        <fileset dir="${ml-ant-http.lib.dir}" includes="**/*.jar"/>
+        <path refid="test.classpath"/>
       </classpath>
     </javac>
     <copy todir="${ml-ant-http.build.tests.dir}">
@@ -71,12 +88,12 @@
   </target>
 
   <target name="test" depends="jar">
-    <junit printsummary="yes">
-      <!-- <formatter type="plain" usefile="false"/> -->
+    <junit printsummary="yes" haltonfailure="yes">
+      <formatter type="plain" usefile="false"/>
       <classpath>
-        <path location="${ml-ant-http.dist.jar.bin}"/>
-        <pathelement path="${ml-ant-http.build.tests.dir}"/>
-        <fileset dir="${ml-ant-http.lib.dir}" includes="**/*.jar"/>
+        <pathelement locaiton="${ml-ant-http.build.tests.dir}"/>
+        <pathelement location="${ml-ant-http.dist.jar.bin}"/>
+        <path refid="test.classpath"/>
       </classpath>
       <batchtest fork="yes">
         <fileset dir="${ml-ant-http.test.src.dir}">
