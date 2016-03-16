@@ -284,8 +284,8 @@ public class QueryNodeTest extends AbstractAntTest {
     project.setProperty("query_param2", "bar");
     project.setProperty("query_value2", "baz");
     final List<String> taskLog = buildRule.logExecuteTarget("query_get", Project.MSG_DEBUG);
-    // System.out.println(taskLog);
-    assertThat(taskLog, hasItem(equalTo("[http] \tSELECT Id,Email FROM Account WHERE Email = 'test@test.com'")));
+
+    assertThat(taskLog, hasItem(equalTo("[http] SELECT Id,Email FROM Account WHERE Email = 'test@test.com'")));
   }
 
   @Test
@@ -307,7 +307,7 @@ public class QueryNodeTest extends AbstractAntTest {
     project.setProperty("query_value2", "baz");
     final List<String> taskLog = buildRule.logExecuteTarget("query_post", Project.MSG_DEBUG);
 
-    assertThat(taskLog, hasItem(equalTo("[http] foo")));
+    assertThat(taskLog, hasItem(equalTo("[http] SELECT Id,Email FROM Account WHERE Email = 'test@test.com'")));
   }
 
   @Test

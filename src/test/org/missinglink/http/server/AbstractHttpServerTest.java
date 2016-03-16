@@ -504,11 +504,11 @@ public abstract class AbstractHttpServerTest extends AbstractTest {
 
   protected Map<String, String> getQueryParams(final URI uri) throws UnsupportedEncodingException {
     final Map<String, String> map = new HashMap<String, String>();
-    if (null != uri.getQuery() && uri.getQuery().length() > 0) {
-      final String[] params = uri.getQuery().split("&");
+    if (null != uri.getRawQuery() && uri.getRawQuery().length() > 0) {
+      final String[] params = uri.getRawQuery().split("&");
       for (final String param : params) {
-        final String[] pair = param.split("=");
-        map.put(pair[0], pair.length > 1 ? URLDecoder.decode(pair[1], "UTF-8") : null);
+        final String[] pair = param.split("=", 2);
+        map.put(URLDecoder.decode(pair[0], "UTF-8"), pair.length > 1 ? URLDecoder.decode(pair[1], "UTF-8") : null);
       }
     }
     return map;

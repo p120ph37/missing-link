@@ -221,6 +221,7 @@ public class HttpClientUriTest {
   @Test
   public void testValidHttpUris() throws InvalidUriException {
     HttpClient.uri("http://host");
+    HttpClient.uri("HTTP://host");
     HttpClient.uri("http://host/");
     HttpClient.uri("http://host:80");
     HttpClient.uri("http://host:80/");
@@ -237,6 +238,7 @@ public class HttpClientUriTest {
   @Test
   public void testValidHttpsUris() throws InvalidUriException {
     HttpClient.uri("https://host");
+    HttpClient.uri("HTTPS://host");
     HttpClient.uri("https://host/");
     HttpClient.uri("https://host:443");
     HttpClient.uri("https://host:443/");
@@ -271,6 +273,10 @@ public class HttpClientUriTest {
     Assert.assertEquals("http://host/context/longer/file.html", client.getUri());
     client = HttpClient.uri("http://host/context/encoded%20path/file.html").toHttpClient();
     Assert.assertEquals("http://host/context/encoded%20path/file.html", client.getUri());
+    client = HttpClient.uri("http://host/context/unencoded path/file.html").toHttpClient();
+    Assert.assertEquals("http://host/context/unencoded+path/file.html", client.getUri());
+    client = HttpClient.uri("http://host/context/unencoded path/file.html").toHttpClient();
+    Assert.assertEquals("http://host/context/unencoded+path/file.html", client.getUri());
     client = HttpClient.uri("http://host/context/longer/?qp").toHttpClient();
     Assert.assertEquals("http://host/context/longer/?qp", client.getUri());
     client = HttpClient.uri("http://host/context/longer/file.html?qp").toHttpClient();
@@ -285,6 +291,8 @@ public class HttpClientUriTest {
     Assert.assertEquals("http://host/context/longer/file.html?qp=value", client.getUri());
     client = HttpClient.uri("http://host/context/longer/?qp=value with spaces").toHttpClient();
     Assert.assertEquals("http://host/context/longer/?qp=value+with+spaces", client.getUri());
+    client = HttpClient.uri("http://host/context/longer/?email=bob%40example.com").toHttpClient();
+    Assert.assertEquals("http://host/context/longer/?email=bob%40example.com", client.getUri());
     client = HttpClient.uri("http://host/context/longer/file.html?qp=value with spaces").toHttpClient();
     Assert.assertEquals("http://host/context/longer/file.html?qp=value+with+spaces", client.getUri());
     client = HttpClient.uri("http://host/context/longer/?qp=value with spaces&qp2=value2").toHttpClient();
