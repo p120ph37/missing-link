@@ -212,6 +212,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.Date;
@@ -585,21 +586,17 @@ public class HttpClient {
      */
     protected void parseUri(final String uri) throws InvalidUriException {
       try {
-        final int queryIndex = uri.lastIndexOf("?");
-        final boolean uriHasQuery = queryIndex != -1;
-        final String query = uriHasQuery ? uri.substring(queryIndex + 1) : null;
-        final URI safeUri = new URI(uriHasQuery ? uri.substring(0, queryIndex) : uri);
-
-        httpClient.protocol = safeUri.getScheme();
-        httpClient.host = safeUri.getHost();
-        httpClient.port = safeUri.getPort() != -1 ? safeUri.getPort() : null;
-        httpClient.path = safeUri.getRawPath();
-        parseQuery(query);
-        if (!safeUri.getScheme().toLowerCase().equals("http") && !safeUri.getScheme().toLowerCase().equals("https")) {
+        final URI jnUri = new URI(fixup(uri));
+        httpClient.protocol = jnUri.getScheme().toLowerCase();
+        httpClient.host = jnUri.getHost();
+        httpClient.port = jnUri.getPort() != -1 ? jnUri.getPort() : null;
+        httpClient.path = jnUri.getRawPath();
+        parseQuery(jnUri.getRawQuery());
+        if (!httpClient.protocol.equals("http") && !httpClient.protocol.equals("https")) {
           throw new InvalidUriException(uri);
         }
       } catch (final Throwable t) {
-        throw new InvalidUriException(t);
+        throw new InvalidUriException(t.getMessage() + " URI: " + uri, t);
       }
     }
 
@@ -613,18 +610,49 @@ public class HttpClient {
       if (null != query && query.length() > 0) {
         final String[] queryParts = query.split("&");
         for (final String queryPart : queryParts) {
-          final String[] keyValue = queryPart.split("=");
-          httpClient.queryUnencoded.put(keyValue[0], keyValue.length > 1 ? keyValue[1] : null);
+          final String[] keyValue = queryPart.split("=", 2);
+          httpClient.queryEncoded.put(keyValue[0], keyValue.length > 1 && keyValue[1].length() > 0 ? keyValue[1] : null);
         }
       }
-      for (final Entry<String, String> entry : httpClient.queryUnencoded.entrySet()) {
-        httpClient.queryEncoded.put(entry.getKey(), encode(entry.getValue()));
+      for (final Entry<String, String> entry : httpClient.queryEncoded.entrySet()) {
+        httpClient.queryUnencoded.put(entry.getKey(), decode(entry.getValue()));
       }
     }
 
     protected String encode(final String str) {
       try {
         return null == str ? null : URLEncoder.encode(str, UTF_8);
+      } catch (final UnsupportedEncodingException e) {
+        return null;
+      }
+    }
+
+    protected String decode(final String str) {
+      try {
+        return null == str ? null : URLDecoder.decode(str, UTF_8);
+      } catch (final UnsupportedEncodingException e) {
+        return null;
+      }
+    }
+
+    /**
+     * Encode any blatantly unusable chars (leave special chars as-is) This is
+     * not a normal full encode - it is just a fix-up to try to make
+     * questionable URLs usable.
+     */
+    protected String fixup(final String str) {
+      if (null == str) {
+        return null;
+      }
+      try {
+        return URLEncoder.encode(str, UTF_8)
+            .replace("%2B", "+")
+            .replace("%26", "&")
+            .replace("%2F", "/")
+            .replace("%3A", ":")
+            .replace("%3D", "=")
+            .replace("%3F", "?")
+            .replace("%25", "%");
       } catch (final UnsupportedEncodingException e) {
         return null;
       }
