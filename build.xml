@@ -91,7 +91,7 @@
     <junit printsummary="yes" haltonfailure="yes">
       <formatter type="plain" usefile="false"/>
       <classpath>
-        <pathelement locaiton="${ml-ant-http.build.tests.dir}"/>
+        <pathelement location="${ml-ant-http.build.tests.dir}"/>
         <pathelement location="${ml-ant-http.dist.jar.bin}"/>
         <path refid="test.classpath"/>
       </classpath>
