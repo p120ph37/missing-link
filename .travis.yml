@@ -1,1 +1,19 @@
 language: java
+sudo: false
+deploy:
+  - provider: bintray
+    skip_cleanup: true
+    file: .bintray.json
+    user: p120ph37
+    key:
+      secure: lSTxOo5Xp5F1lspaTb+wXDHQbCRg213+e2/X2bu8t2ZZXzhabqjpBGkhUvF6Srq0V+0abCPmjZ6yJnHA54DHbKCSdR3OhEGoD4UjzHc6Jl9rqT7R7fyW0dsbNS96yAL6GbWKpNf1SHmKojY7mr7Mx8NjwC///GP3VXM1aIMq4ryUiwvn2v5RirLNGVPQsHLfzWtsF2v5abvKaXW9ukvxcqnLVF1WQFXb3AG7xrGrWi8GoSmoAVR6tKwajnKCgmyWSnlu34VO5RAcx1VTRiAO7R9UzHv57wWKfhfu+a1xilNbpRVky4pmOokYxG9l00SLZL0TN8Mg20jDBnjJxMRGrnO/t1u9ly2jbOzH4EYStoOyI/ZAB/+XcRw/9OMofPQ2U6N+cXGYmqUepS3RFK8iBYs94Biw9wJ1mD5TYlJG3ovXCeDNTfCbaPPjzklbC+E3fcc0+ZiF4OC9b+uWl6f4xubDM+UXWfFXQGwg/AqBPNyQ/l/qXjs9FwGkuZ0h+8C7HyrKkloL2V3tpIu7htrkgcVOTzHa3Re3hGmTDhU0+VGCNYfv6oBz7JILtQcbJ3fwbZwv6ClS8WlkngI/uBuQeu9GYosIR7qal5BKyYwqMY+7RK1u+2Xi9uNmn9qUDzO31iHdjdggmVCf7Eg/U4cg3LoalbxIxKReClTgT4YVZ8Y=
+  - provider: releases
+    defore-deploy:
+      - ant dist
+    api_key:
+      secure: lPeQkKo5ntROHEofWslP79kA6sR3O7kfA8SA8vAngeFwD12+9TG3AsLcz98hs6NMjrN7nfKZOMXsN8QfgbBqPzW0qHkgcKVjXfBcWevampEcpRowjEFvuRa2FU6racM2gXs3QuJmRgxpBV96J3dK/pCP1qZc1SNcs8HJeJWUl/zak0syZzIOi6o5k3IhQe3Ni2WM/uk96c0sk9El2V2+Am8ayWpcD1603gNI3pnzOh7LfPBSZRIpAboktIvl6YEkp2MumnlRPXVtIm34uFm8QtiwCQDtHXBhCCD3XPuZucv6n3HjSBm6qtmBDleaHoKvXsCeV74uSn8d2VDRnhFPSv2lYMCJTQjuTAWEWw8mSUpdnvmVSTPtYOfpsoAH+W76U3kscut8Z9+TG2BoIZj5W/mKnrrcIjLvXsfeozeG16hCAwArweFSEOMc/pDCOjrf2BEdMebdX6h/bJt/MxxqTUzwkGYiOoCyYzmvExdp1d5skchRg+P7HdxOJ7GzAVqT+PZTDPUH95ZJ/jbWDtwDXTKjPsXzdPW0eN5Ck1MzG4c44FJyku5TnB8KCYecrS6mIvU8uoYCuzCJ8ghTdf8eIyr5mmg9+3/mDZUUGKbU6ivohUPgTrEQtTCLkpSsrYs0FhcegdDAt7VJOY/g3giHjAPJcRmaVPpBRRdowrmTIgU=
+    file:
+      - dist/ml-ant-http-*.zip
+      - dist/ml-ant-http-*/ml-ant-http-*.jar
+    on:
+      tags: true

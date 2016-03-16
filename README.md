@@ -1,4 +1,8 @@
+[![GitHub release](https://img.shields.io/github/release/p120ph37/missing-link.svg)](https://github.com/p120ph37/missing-link/releases/latest)
+[![GitHub license](https://img.shields.io/github/license/p120ph37/missing-link.svg)](https://github.com/p120ph37/missing-link/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/p120ph37/missing-link.svg?branch=master)](https://travis-ci.org/p120ph37/missing-link)
+[![Download Snapshot](https://img.shields.io/badge/Download-SNAPSHOT-yellow.svg)](https://bintray.com/artifact/download/p120ph37/generic/ml-ant-http-SNAPSHOT.jar)
+
 
 # missing link Ant http task
 

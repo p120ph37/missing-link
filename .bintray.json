@@ -1,0 +1,17 @@
+{
+    "package": {
+        "subject": "p120ph37",
+        "repo": "generic",
+        "name": "missing-link"
+    },
+
+    "version": {
+        "name": "SNAPSHOT"
+    },
+
+    "files":
+        [
+        {"includePattern": "dist/(.*)/ml-ant-http-(.*).jar", "uploadPattern": "ml-ant-http-SNAPSHOT.jar"}
+        ],
+    "publish": true
+}
